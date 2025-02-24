@@ -1,0 +1,17 @@
+print()
+print('**Range Generator**')
+print()
+print('Makes ranges using Start, Stop, and Step')
+print()
+
+print('Enter Start Number')
+start = int(input())
+print()
+print('Enter Stop Number')
+stop = int(input())
+print()
+print('Enter Step Number')
+step = int(input())
+print()
+
+print(list(range (start , stop, step)))
