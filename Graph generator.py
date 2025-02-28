@@ -32,6 +32,15 @@ print()
 # Title input
 print("Enter the title of the graph")
 title = input()
+# Color input
+print()
+print("Enter the color of the graph")
+print('Choices are - red, yellow, blue, green')
+color = input(str())
+
+if color != 'red' or color != 'yellow' or color != 'blue' or color != 'green':
+    print ('ERROR :')
+    print('Please enter a valid color'
 
 # Plotting the graph
 plt.scatter(x, y)
