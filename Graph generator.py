@@ -38,7 +38,7 @@ print("Enter the color of the graph")
 print('Choices are - red, yellow, blue, green')
 color = input(str())
 
-if color != 'red' or color != 'yellow' or color != 'blue' or color != 'green':
+if color not in ['red', 'yellow', 'blue', 'green']:
     print ('ERROR :')
     print('Please enter a valid color'
 
