@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 # Starting Statements
 print()
-print("NOTE : This program will generate a graph")
+print("NOTE : This program will generate a line graph")
 print('NOTE : The number of numbers in x and y have to be the same')
 print()
 
@@ -18,7 +18,7 @@ print()
 if len(x) != len(y):
     print("The number of numbers in x and y have to be the same")
     print("Please try again")
-    quit()
+    quit() 
 
 # X and Y label input
 print()
@@ -32,6 +32,7 @@ print()
 # Title input
 print("Enter the title of the graph")
 title = input()
+
 # Color input
 print()
 print("Enter the color of the graph")
@@ -39,12 +40,29 @@ print('Choices are - red, yellow, blue, green')
 color = input(str())
 
 if color not in ['red', 'yellow', 'blue', 'green']:
-    print ('ERROR :')
-    print('Please enter a valid color'
+    print('ERROR :')
+    print('Please enter a valid color')
+    quit()
+
+# Line spacing
+
+print()
+print('Do you want full line spacing or dashed line spacing?')
+print('Choices are - full, dashed')
+line_spacing = input(str())
+if line_spacing == 'full':
+    line_spacing = '-'
+else:
+    line_spacing = '--'
+
+if line_spacing not in ['-', '--']:
+    print('ERROR :')
+    print('Please enter a valid line spacing')
+    quit()
 
 # Plotting the graph
-plt.scatter(x, y)
-plt.plot(x, y)
+plt.scatter(x, y, c=color)
+plt.plot(x, y, c=color, linestyle=line_spacing)
 plt.xlabel(x_label)
 plt.ylabel(y_label)
 plt.title(title)
