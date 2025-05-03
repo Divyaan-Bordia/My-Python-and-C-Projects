@@ -1,250 +1,141 @@
-from tkinter  import *
+import tkinter as tk
 
-window = Tk()
-window.title("Calculator")
+# Functions
+def add_to_expression(value):
+    current_text = entry.get()
+    if current_text == "0" and value != ".":
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, value)
+    else:
+        entry.insert(tk.END, value)
 
-l1 = Label(window,
-           text  = 'Choose an operation',
-           font = ('Times New Roman', 20),
-           bg = 'white',
-           fg = 'blue')
-l1.pack(side = TOP)
+def clear_entry(event=None):
+    entry.delete(0, tk.END)
+    entry.insert(tk.END, "0")
 
+def toggle_sign():
+    current_text = entry.get()
+    if current_text.startswith("-"):
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, current_text[1:])
+    else:
+        if current_text != "0":
+            entry.delete(0, tk.END)
+            entry.insert(tk.END, "-" + current_text)
 
-def add():
-    l1.destroy()
-    Badd.destroy()
-    Bsub.destroy()
-    Bmul.destroy()
-    Bdivi.destroy()
+def calculate_percent():
+    try:
+        current_value = float(entry.get())
+        percent_value = current_value / 100
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, str(percent_value))
+    except:
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, "Error")
 
-    l2 = Label(window,
-               text  = 'Enter the numbers you want to add',
-               font = ('Times New Roman', 20),
-               bg = 'white',
-               fg = 'blue')
-    l2.pack(side = TOP)
-    e1 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e1.pack(side = TOP)
-    e2 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e2.pack(side = TOP)
+def evaluate_expression(event=None):
+    try:
+        expression = entry.get().replace("x", "*")
+        result = eval(expression)
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, str(result))
+    except:
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, "Error")
 
-    def ADD():
-        num1 = int(e1.get())
-        num2 = int(e2.get())
-        result = num1 + num2
-        l2.destroy()
-        e1.destroy()
-        e2.destroy()
-        submit.destroy()
-        l1 = Label(window,
-                   text  = 'The result is: ' + str(result),
-                   font = ('Times New Roman', 20),
-                   bg = 'white',
-                   fg = 'blue')
-        l1.pack(side = TOP)
+def backspace(event=None):
+    current_text = entry.get()
+    if len(current_text) > 1:
+        entry.delete(0, tk.END)
+        entry.insert(tk.END, current_text[:-1])
+    else:
+        clear_entry()
 
-    submit = Button(window,
-                     text = 'Submit',
-                     bg = 'black',
-                     fg = '#00ff00',
-                     font = ('Times New Roman', 20),
-                     command = ADD)
-    submit.pack(side = BOTTOM)
+def key_pressed(event):
+    char = event.char
+    if char in "0123456789.+-/*":
+        add_to_expression(char)
+    elif char == "x":
+        add_to_expression("*")
+    elif char == "=" or event.keysym == "Return":
+        evaluate_expression()
+    elif char.upper() == "C":
+        clear_entry()
+    elif event.keysym == "BackSpace":
+        backspace()
 
+# Create window
+root = tk.Tk()
+root.title("Calculator")
+root.geometry("400x600")
+root.configure(bg="black")
 
-def sub():
-    l1.destroy()
-    Badd.destroy()
-    Bsub.destroy()
-    Bmul.destroy()
-    Bdivi.destroy()
+# Entry
+entry = tk.Entry(root, font=("Arial", 36), bg="black", fg="white", borderwidth=0, justify="right")
+entry.grid(row=0, column=0, columnspan=4, sticky="nsew", padx=20, pady=20)
+entry.insert(0, "0")
 
-    l2 = Label(window,
-               text  = 'Enter the numbers you want to subtract',
-               font = ('Times New Roman', 20),
-               bg = 'white',
-               fg = 'blue')
-    l2.pack(side = TOP)
-    e1 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e1.pack(side = TOP)
-    e2 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e2.pack(side = TOP)
+# Button details
+button_font = ("Arial", 24)
+button_bg = {
+    "number": "grey",
+    "operator": "orange",
+    "function": "lightgrey"
+}
 
-    def SUB():
-        num1 = int(e1.get())
-        num2 = int(e2.get())
-        result = num1 - num2
-        l2.destroy()
-        e1.destroy()
-        e2.destroy()
-        submit.destroy()
-        l1 = Label(window,
-                   text  = 'The result is: ' + str(result),
-                   font = ('Times New Roman', 20),
-                   bg = 'white',
-                   fg = 'blue')
-        l1.pack(side = TOP)
+# Layout
+buttons = [
+    ("C", 1, 0, clear_entry, "function"),
+    ("+/-", 1, 1, toggle_sign, "function"),
+    ("%", 1, 2, calculate_percent, "function"),
+    ("/", 1, 3, lambda: add_to_expression("/"), "operator"),
 
-    submit = Button(window,
-                     text = 'Submit',
-                     bg = 'black',
-                     fg = '#00ff00',
-                     font = ('Times New Roman', 20),
-                     command = SUB)
-    submit.pack(side = BOTTOM)
+    ("7", 2, 0, lambda: add_to_expression("7"), "number"),
+    ("8", 2, 1, lambda: add_to_expression("8"), "number"),
+    ("9", 2, 2, lambda: add_to_expression("9"), "number"),
+    ("*", 2, 3, lambda: add_to_expression("*"), "operator"),
 
-def mul():
-    l1.destroy()
-    Badd.destroy()
-    Bsub.destroy()
-    Bmul.destroy()
-    Bdivi.destroy()
+    ("4", 3, 0, lambda: add_to_expression("4"), "number"),
+    ("5", 3, 1, lambda: add_to_expression("5"), "number"),
+    ("6", 3, 2, lambda: add_to_expression("6"), "number"),
+    ("-", 3, 3, lambda: add_to_expression("-"), "operator"),
 
-    l2 = Label(window,
-               text  = 'Enter the numbers you want to multiply',
-               font = ('Times New Roman', 20),
-               bg = 'white',
-               fg = 'blue')
-    l2.pack(side = TOP)
-    e1 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e1.pack(side = TOP)
-    e2 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e2.pack(side = TOP)
+    ("1", 4, 0, lambda: add_to_expression("1"), "number"),
+    ("2", 4, 1, lambda: add_to_expression("2"), "number"),
+    ("3", 4, 2, lambda: add_to_expression("3"), "number"),
+    ("+", 4, 3, lambda: add_to_expression("+"), "operator"),
 
-    def MUL():
-        num1 = int(e1.get())
-        num2 = int(e2.get())
-        result = num1 * num2
-        l2.destroy()
-        e1.destroy()
-        e2.destroy()
-        submit.destroy()
-        l1 = Label(window,
-                   text  = 'The result is: ' + str(result),
-                   font = ('Times New Roman', 20),
-                   bg = 'white',
-                   fg = 'blue')
-        l1.pack(side = TOP)
+    ("0", 5, 0, lambda: add_to_expression("0"), "number"),
+    (".", 5, 2, lambda: add_to_expression("."), "number"),
+    ("=", 5, 3, evaluate_expression, "operator"),
+]
 
-    submit = Button(window,
-                     text = 'Submit',
-                     bg = 'black',
-                     fg = '#00ff00',
-                     font = ('Times New Roman', 20),
-                     command = MUL)
-    submit.pack(side = BOTTOM)
+# Create buttons
+for (text, row, col, command, category) in buttons:
+    btn_color = button_bg[category]
+    btn = tk.Button(
+        root,
+        text=text,
+        command=command,
+        font=button_font,
+        bg=btn_color,
+        fg="white",
+        activebackground=btn_color,
+        activeforeground="white",
+        borderwidth=0
+    )
+    if text == "0":
+        btn.grid(row=row, column=col, columnspan=2, sticky="nsew", padx=2, pady=2)
+    else:
+        btn.grid(row=row, column=col, sticky="nsew", padx=2, pady=2)
 
-def divi():
-    l1.destroy()
-    Badd.destroy()
-    Bsub.destroy()
-    Bmul.destroy()
-    Bdivi.destroy()
+# Row and column sizing
+for i in range(6):
+    root.rowconfigure(i, weight=1)
+for i in range(4):
+    root.columnconfigure(i, weight=1)
 
-    l2 = Label(window,
-               text  = 'Enter the numbers you want to divide',
-               font = ('Times New Roman', 20),
-               bg = 'white',
-               fg = 'blue')
-    l2.pack(side = TOP)
-    e1 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e1.pack(side = TOP)
-    e2 = Entry(window,
-               font = ('Times New Roman', 20),
-               bg = 'black',
-               fg = '#00ff00')
-    e2.pack(side = TOP)
+# Key binding
+root.bind("<Key>", key_pressed)
 
-    def DIVI():
-        num1 = int(e1.get())
-        num2 = int(e2.get())
-        try:
-            result = num1 / num2
-            l2.destroy()
-            e1.destroy()
-            e2.destroy()
-            submit.destroy()
-            l1 = Label(window,
-                       text  = 'The result is: ' + str(result),
-                       font = ('Times New Roman', 20),
-                       bg = 'white',
-                       fg = 'blue')
-            l1.pack(side = TOP)
-        except ZeroDivisionError:
-            l2.destroy()
-            e1.destroy()
-            e2.destroy()
-            submit.destroy()
-            l1 = Label(window,
-                       text  = 'Error: Division by zero',
-                       font = ('Times New Roman', 20),
-                       bg = 'white',
-                       fg = 'blue')
-            l1.pack(side = TOP)
-
-    submit = Button(window,
-                     text = 'Submit',
-                     bg = 'black',
-                     fg = '#00ff00',
-                     font = ('Times New Roman', 20),
-                     command = DIVI)
-    submit.pack(side = BOTTOM)
-  
-    
-
-Badd = Button(window,
-           text='Add',
-           bg = 'black',
-           fg = '#00ff00',
-           font = ('Times New Roman', 20),
-           command = add)
-Badd.pack(side = BOTTOM)
-
-Bsub = Button(window,
-              text='Subtract',
-              bg = 'black',
-              fg = '#00ff00',
-              font = ('Times New Roman', 20),
-              command = sub)
-Bsub.pack(side = BOTTOM)
-
-Bmul = Button(window,
-                text='Multiply',
-                bg = 'black',
-                fg = '#00ff00',
-                font = ('Times New Roman', 20),
-                command = mul)
-Bmul.pack(side = BOTTOM)
-
-Bdivi = Button(window,
-                text='Divide',
-                bg = 'black',
-                fg = '#00ff00',
-                font = ('Times New Roman', 20),
-                command = divi)               
-Bdivi.pack(side = BOTTOM)
-
-
-window.mainloop()
+root.mainloop()
